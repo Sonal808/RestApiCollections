@@ -1,0 +1,482 @@
+{
+	"info": {
+		"_postman_id": "4fb61b33-6985-4487-9c66-e5ef8f2b20f2",
+		"name": "BrandCollection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12747991",
+		"_collection_link": "https://www.postman.com/spteam-0238/workspace/api-mastery/collection/12747991-4fb61b33-6985-4487-9c66-e5ef8f2b20f2?action=share&source=collection_link&creator=12747991"
+	},
+	"item": [
+		{
+			"name": "1-GetBrands",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"const responseData = pm.response.json();\r",
+							"pm.test(\"Check the response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Check the response properties\", function () {\r",
+							"\r",
+							"    responseData.forEach(obj=>{\r",
+							"        pm.expect(obj).to.have.property(\"_id\");\r",
+							"        pm.expect(obj).to.have.property(\"name\");\r",
+							"    })\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check the response is an Array\", function () {\r",
+							"   pm.expect(responseData).to.be.an(\"array\");\r",
+							"  \r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://practice-react.sdetunicorns.com/api/test/brands",
+					"protocol": "https",
+					"host": [
+						"practice-react",
+						"sdetunicorns",
+						"com"
+					],
+					"path": [
+						"api",
+						"test",
+						"brands"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2-CreateBrand",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();\r",
+							"\r",
+							"const product_id = response._id;\r",
+							"console.log(product_id);\r",
+							"\r",
+							"const actualName = response.name;\r",
+							"console.log(\"actual name :\" + actualName );\r",
+							"\r",
+							"pm.variables.set(\"productId\",product_id)\r",
+							"\r",
+							"const actualNDescription = response.description;\r",
+							"\r",
+							"const rawBody = pm.request.body.raw;\r",
+							"const requestData = JSON.parse(rawBody);\r",
+							"\r",
+							"const expectedName = requestData.name;\r",
+							"const expectedDescription = requestData.description\r",
+							"\r",
+							"pm.test(\"Check the brand name is correct\", function () {\r",
+							"\tpm.expect(expectedName).to.be.eql(actualName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check the brand description is correct\", function () {\r",
+							"\tpm.expect(expectedDescription).to.be.eql(actualNDescription)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check the 'CREATE_BRAND' response status code is 200\", function () {\r",
+							"\tpm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"{{$randomProductName}}\",\r\n  \"description\": \"{{$randomProductMaterial}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/test/brands",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"test",
+						"brands"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3-GetBrandById",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const Ajv = require('ajv');  // Ensure AJV is available in Postman\r",
+							"const ajv = new Ajv({ allErrors: true });\r",
+							"\r",
+							"const schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"_id\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"name\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"description\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"createdAt\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"updatedAt\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"__v\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"_id\",\r",
+							"    \"name\",\r",
+							"    \"description\",\r",
+							"    \"createdAt\",\r",
+							"    \"updatedAt\",\r",
+							"    \"__v\"\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"const responseData = pm.response.json();\r",
+							"const validate = ajv.compile(schema);\r",
+							"const valid = validate(responseData);\r",
+							"\r",
+							"\r",
+							"pm.test(\"Check the 'GET_BRAND_BY_ID' response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"if (!valid) {\r",
+							"    console.log(validate.errors);\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Check the response is mached with the json schema\", function () {\r",
+							"    pm.expect(valid, JSON.stringify(validate.errors, null, 2)).to.be.true;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Check the response properties\", function () {\r",
+							"   pm.expect(responseData).to.have.property(\"_id\");\r",
+							"   pm.expect(responseData).to.have.property(\"name\");\r",
+							"   pm.expect(responseData).to.have.property(\"description\");\r",
+							"   pm.expect(responseData).to.have.property(\"updatedAt\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/test/brands/{{productId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"test",
+						"brands",
+						"{{productId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4-UpdateBrand",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check the 'UPDATE_BRAND' response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"const rawBody = pm.request.body.raw;\r",
+							"const requestData = JSON.parse(rawBody);\r",
+							"\r",
+							"const updatedName = requestData.name;\r",
+							"const updatedDescription = requestData.description\r",
+							"\r",
+							"const actualName = response.name;\r",
+							"const actualNDescription = response.description;\r",
+							"\r",
+							"pm.test(\"Check the Updated brand name is correct\", function () {\r",
+							"\tpm.expect(updatedName).to.be.eql(actualName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check the Updated brand description is correct\", function () {\r",
+							"\tpm.expect(updatedDescription).to.be.eql(actualNDescription)\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"{{$randomProductName}}\",\r\n  \"description\": \"{{$randomProductMaterial}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/test/brands/{{productId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"test",
+						"brands",
+						"{{productId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5-GetBrandById",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const Ajv = require('ajv');  // Ensure AJV is available in Postman\r",
+							"const ajv = new Ajv({ allErrors: true });\r",
+							"\r",
+							"const schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"_id\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"name\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"description\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"createdAt\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"updatedAt\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"__v\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"_id\",\r",
+							"    \"name\",\r",
+							"    \"description\",\r",
+							"    \"createdAt\",\r",
+							"    \"updatedAt\",\r",
+							"    \"__v\"\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"const responseData = pm.response.json();\r",
+							"const validate = ajv.compile(schema);\r",
+							"const valid = validate(responseData);\r",
+							"\r",
+							"\r",
+							"pm.test(\"Check the 'GET_BRAND_BY_ID' response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"if (!valid) {\r",
+							"    console.log(validate.errors);\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Response matches the JSON schema\", function () {\r",
+							"    pm.expect(valid, JSON.stringify(validate.errors, null, 2)).to.be.true;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Check the response properties\", function () {\r",
+							"   pm.expect(responseData).to.have.property(\"_id\");\r",
+							"   pm.expect(responseData).to.have.property(\"name\");\r",
+							"   pm.expect(responseData).to.have.property(\"description\");\r",
+							"   pm.expect(responseData).to.have.property(\"updatedAt\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/test/brands/{{productId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"test",
+						"brands",
+						"{{productId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-DeleteBrand",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check the 'DELETE_BRAND' response status code is 200\", function () {\r",
+							"\tpm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body should be null\", function () {\r",
+							"    pm.expect(pm.response.json()).to.be.null;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/test/brands/{{productId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"test",
+						"brands",
+						"{{productId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7-GetBrandById",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check the 'GET_BRAND_BY_ID' response status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"const responseData = pm.response.json();\r",
+							"\r",
+							"const error = responseData.error\r",
+							"\r",
+							"pm.test(\"Check the error message is shown as 'Brand not found.'\", function () {\r",
+							"    pm.expect(error).to.be.eql(\"Brand not found.\")\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/test/brands/{{productId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"test",
+						"brands",
+						"{{productId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
