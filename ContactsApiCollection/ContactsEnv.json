@@ -1,0 +1,27 @@
+{
+	"id": "f7a4202a-cb23-43aa-bcb7-469665ab4475",
+	"name": "ContactsEnv",
+	"values": [
+		{
+			"key": "baseURL",
+			"value": "https://thinking-tester-contact-list.herokuapp.com",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "email",
+			"value": "dukeorigins@gmail.com",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "password",
+			"value": "duke@1234",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2025-03-21T08:52:07.348Z",
+	"_postman_exported_using": "Postman/11.37.1"
+}

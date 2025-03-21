@@ -1,0 +1,645 @@
+{
+	"info": {
+		"_postman_id": "a915d2cd-8c32-4a8b-9389-0ebf04defead",
+		"name": "ContactsAPIE2E",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12747991",
+		"_collection_link": "https://www.postman.com/spteam-0238/workspace/api-mastery/collection/12747991-a915d2cd-8c32-4a8b-9389-0ebf04defead?action=share&source=collection_link&creator=12747991"
+	},
+	"item": [
+		{
+			"name": "1-Login User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();\r",
+							"const tokenId = response.token;\r",
+							"console.log(\"token Id is : \"+ tokenId);\r",
+							"\r",
+							"pm.collectionVariables.set(\"myTokenId\",\"Bearer \" + tokenId)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/users/login",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2-Head contacts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check if Content-Type header is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check Content-Type value\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\", \"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check Content-Length value\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Length\", \"5497\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check Connection value\", function () {\r",
+							"    pm.response.to.have.header(\"Connection\", \"keep-alive\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "HEAD",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{myTokenId}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/contacts",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"contacts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3-Options contacts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check Status code name is OK\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "OPTIONS",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{myTokenId}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/contacts",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"contacts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4-create a contact",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();\r",
+							"const contactId = response._id;\r",
+							"const firstName = response.firstName;\r",
+							"const lastName = response.lastName;\r",
+							"const phone = response.phone;\r",
+							"const city = response.city;\r",
+							"console.log(contactId)\r",
+							"\r",
+							"pm.variables.set(\"constactID\",contactId);\r",
+							"pm.variables.set(\"first_name\",firstName);\r",
+							"pm.variables.set(\"last_name\",lastName);\r",
+							"pm.variables.set(\"phone\",phone);\r",
+							"pm.variables.set(\"city\",city);\r",
+							"\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"\tpm.response.to.have.status(201);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{myTokenId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\",\r\n    \"birthdate\": \"1970-01-01\",\r\n    \"email\": \"ApiAuto_{{$randomEmail}}\",\r\n    \"phone\": \"{{$randomPhoneNumber}}\",\r\n    \"street1\": \"{{$randomStreetAddress}}\",\r\n    \"street2\": \"{{$randomStreetName}}\",\r\n    \"city\": \"{{$randomCity}}\",\r\n    \"stateProvince\": \"MT\",\r\n    \"postalCode\": \"78909\",\r\n    \"country\": \"{{$randomCountry}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/contacts/",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"contacts",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5-Get the created contact",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    \r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.test(\"Check the user id is correct\", function () {\r",
+							"\r",
+							"    const actualId = pm.variables.get(\"constactID\")\r",
+							"    pm.expect(jsonData._id).to.eql(actualId);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check the user firstname and last name is correct\", function () {\r",
+							"\r",
+							"    const actualFirstName = pm.variables.get(\"first_name\");\r",
+							"    const actualLastName = pm.variables.get(\"last_name\");\r",
+							"    pm.expect(jsonData.firstName).to.eql(actualFirstName);\r",
+							"    pm.expect(jsonData.lastName).to.eql(actualLastName);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check the Phone number is correct\", function(){\r",
+							"\r",
+							"    const actualPhoneNumber = pm.variables.get(\"phone\");\r",
+							"    pm.expect(jsonData.phone).to.eql(actualPhoneNumber);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check the Phone city is correct\", function(){\r",
+							"\r",
+							"    const actualCity = pm.variables.get(\"city\");\r",
+							"    pm.expect(jsonData.city).to.eql(actualCity);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{myTokenId}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/contacts/{{constactID}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"contacts",
+						"{{constactID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-Update the Contact",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const Ajv = require('ajv');  // Ensure AJV is available in Postman\r",
+							"const ajv = new Ajv({ allErrors: true });\r",
+							"\r",
+							"var schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"_id\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"firstName\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"lastName\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"birthdate\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"email\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"phone\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"street1\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"street2\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"city\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"stateProvince\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"postalCode\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"country\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"owner\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"__v\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"_id\",\r",
+							"    \"firstName\",\r",
+							"    \"lastName\",\r",
+							"    \"birthdate\",\r",
+							"    \"email\",\r",
+							"    \"phone\",\r",
+							"    \"street1\",\r",
+							"    \"street2\",\r",
+							"    \"city\",\r",
+							"    \"stateProvince\",\r",
+							"    \"postalCode\",\r",
+							"    \"country\",\r",
+							"    \"owner\",\r",
+							"    \"__v\"\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var rawData = pm.request.body.raw;\r",
+							"var requestData = JSON.parse(rawData);\r",
+							"\r",
+							"const validate = ajv.compile(schema);\r",
+							"const valid = validate(jsonData);\r",
+							"\r",
+							"var updatedFirstName = requestData.firstName;\r",
+							"var updatedLastName = requestData.lastName;\r",
+							"var updatedEmail = requestData.email;\r",
+							"var updatedPhone = requestData.phone;\r",
+							"var updatedCity = requestData.city;\r",
+							"\r",
+							"\r",
+							"\r",
+							"if (!valid) {\r",
+							"    console.log(validate.errors);\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Response matches the JSON schema\", function () {\r",
+							"    pm.expect(valid, JSON.stringify(validate.errors, null, 2)).to.be.true;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check the user id is correct\", function () {\r",
+							"    const actualId = pm.variables.get(\"constactID\")\r",
+							"    pm.expect(jsonData._id).to.eql(actualId);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check the First name is updated \", function () {\r",
+							"    pm.expect(jsonData.firstName).to.eql(updatedFirstName);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check the Last name is updated \", function () {\r",
+							"    pm.expect(jsonData.lastName).to.eql(updatedLastName);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check the Email is updated \", function () {\r",
+							"    pm.expect(jsonData.email).to.eql(updatedEmail.toLowerCase());\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check the Phone is updated \", function () {\r",
+							"    pm.expect(jsonData.phone).to.eql(updatedPhone);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check the Phone is updated \", function () {\r",
+							"    pm.expect(jsonData.city).to.eql(updatedCity);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{myTokenId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\",\r\n    \"birthdate\": \"1970-01-01\",\r\n    \"email\": \"ApiAuto_{{$randomEmail}}\",\r\n    \"phone\": \"{{$randomPhoneNumber}}\",\r\n    \"street1\": \"{{$randomStreetAddress}}\",\r\n    \"street2\": \"{{$randomStreetName}}\",\r\n    \"city\": \"{{$randomCity}}\",\r\n    \"stateProvince\": \"NY\",\r\n    \"postalCode\": \"5656\",\r\n    \"country\": \"{{$randomCountry}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/contacts/{{constactID}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"contacts",
+						"{{constactID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7-Patch Update the contact",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"var rawData = pm.request.body.raw;\r",
+							"var requestData = JSON.parse(rawData);\r",
+							"\r",
+							"var updatedBirthDate = requestData.birthdate;\r",
+							"var updatedStateProvince = requestData.stateProvince;\r",
+							"var updatedPostalCode = requestData.postalCode;\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check the user id is correct\", function () {\r",
+							"    const actualId = pm.variables.get(\"constactID\")\r",
+							"    pm.expect(jsonData._id).to.eql(actualId);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check the birthdate is updated correctly\", function () {\r",
+							"    pm.expect(jsonData.birthdate).to.eql(updatedBirthDate);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check the state province is updated correctly\", function () {\r",
+							"    pm.expect(jsonData.stateProvince).to.eql(updatedStateProvince);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check the postal code is updated correctly\", function () {\r",
+							"    pm.expect(jsonData.stateProvince).to.eql(updatedStateProvince);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{myTokenId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"birthdate\": \"2000-01-01\",\r\n    \"stateProvince\": \"WA\",\r\n    \"postalCode\": \"7656\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/contacts/{{constactID}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"contacts",
+						"{{constactID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8-Delete the Contact",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{myTokenId}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/contacts/{{constactID}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"contacts",
+						"{{constactID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "9-Check contact id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{myTokenId}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/contacts/{{constactID}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"contacts",
+						"{{constactID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-Logout User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{myTokenId}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/users/logout",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "myTokenId",
+			"value": ""
+		}
+	]
+}
