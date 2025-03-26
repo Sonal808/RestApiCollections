@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  gorest:
+    image: sonalp88/gorestddtest:1.0
+    volumes:
+      - ./results:/app/results
+
+  booking:
+    image: sonalp88/contactsapitest:1.0
+    volumes:
+      - ./results:/app/results
