@@ -23,7 +23,7 @@ pipeline {
                         sh 'docker pull sonalp88/gorestddtest:1.0'
                     }
                 }
-                stage('Pull Booking Image') {
+                stage('Pull contacts Image') {
                     steps {
                         sh 'docker pull sonalp88/contactsapitest:1.0'
                     }
